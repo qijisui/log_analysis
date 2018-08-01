@@ -2,40 +2,44 @@
 import os
 import time
 import re
-from numpy import *
+
+def process(log):
+    pattern = re.compile(r'MESSAGE_BLUETOOTH_STATE_CHANGE: ?(.+)')
+    #conn_state = pattern.search(log,re.I)
+    conn_state = pattern.findall(log)
+    return conn_state
 
 def screen():
     print("later")
 
-def bluetooth_log(log):
-    bt = re.search(r'a2dp',log,re.I)
-    return bt
-
-def access_file():
+def export():
     if not os.path.exists('logcat.txt'):
         print('Not exists file logcat.txt!')
         command = "adb logcat -d > logcat.txt"
         os.system(command)
     
+    now	= time.strftime('%m%d%H%M%S')
     f = open('logcat.txt')
+    w = open('./log_analysis_{}.txt'.format(now),'a+')
     line = f.readline()
     while line:
         log = line.strip()
-        out = bluetooth_log(log)
-        if not out is None:
-            now	= time.strftime('%m%d%H%M%S')
-            w = open('./log_analysis_{}.txt'.format(now),'a+')
+        out = process(log)
+        #if not out is None:
+        if out != [] : 
             w.write(log+'\n')
-            #print(log)
+            print(log)
+            print(out[0])
         line = f.readline()
-    f.close()
     w.close()
+    f.close()
+    
     print('log analysis has finished,please open log_analysis_{}.txt.'.format(now))
 
 comment = input('please enter a comment [0:screen,1:file] --> ')
 if comment == 0 :
     screen()
 elif comment == 1:
-    access_file()
+    export()
 
 
