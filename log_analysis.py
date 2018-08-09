@@ -57,16 +57,16 @@ def bond_state(log):
 
 #a2dp state
 def a2dp_disconnected():
-    return "CONNECTION_STATE_DISCONNECTED"
+    return "DISCONNECTED"
 
 def a2dp_connecting():
-    return "CONNECTION_STATE_CONNECTING"
+    return "CONNECTING"
 
 def a2dp_connected():
-    return "CONNECTION_STATE_CONNECTED"
+    return "CONNECTED"
 
 def a2dp_disconnecting():
-    return "CONNECTION_STATE_DISCONNECTING"
+    return "DISCONNECTING"
 
 def a2dp_state_change(arg):
     switcher={
@@ -84,7 +84,7 @@ def a2dp_state(log):
     state = pattern.search(log)
     if not state is None:
         ad_state = a2dp_state_change(state.group(1))
-        ad_state = '{:^29}'.format(ad_state)
+        ad_state = '{:^14}'.format(ad_state)
         return ad_state
     else:
         ad_state = '{}'.format(' ')
@@ -92,19 +92,19 @@ def a2dp_state(log):
 
 #hfp state
 def hfp_disconnected():
-    return "CONNECTION_STATE_DISCONNECTED"
+    return "DISCONNECTED"
 
 def hfp_connecting():
-    return "CONNECTION_STATE_CONNECTING"
+    return "CONNECTING"
 
 def hfp_connected():
-    return "CONNECTION_STATE_CONNECTED"
+    return "CONNECTED"
 
 def hfp_disconnecting():
-    return "CONNECTION_STATE_DISCONNECTING"
+    return "DISCONNECTING"
 
 def hfp_slc_connected():
-    return "CONNECTION_STATE_SLC_CONNECTED"
+    return "SLC_CONNECTED"
 
 def hfp_state_change(arg):
     switcher={
@@ -123,7 +123,7 @@ def hfp_state(log):
     state = pattern.search(log)
     if not state is None:
         hf_state = hfp_state_change(state.group(1))
-        hf_state = '{:^30}'.format(hf_state)
+        hf_state = '{:^13}'.format(hf_state)
         return hf_state
     else:
         hf_state = '{}'.format(' ')
@@ -137,9 +137,9 @@ def process(log):
     ad_state = a2dp_state(log)
     hf_state = hfp_state(log)
 
-    if log_time != [] and bt_state != bd_state:
+    if log_time != [] and ((bt_state != ' ') or (bd_state != ' ') or (ad_state != ' ') or (hf_state != ' ')):
         w = open('log_analysis.txt','a+')
-        out = '{}|{:24}|{:24}|{:29}|{:30}'.format(log_time[0],bt_state,bd_state,ad_state,hf_state)
+        out = '{}|{:24}|{:24}|{:14}|{:13}|'.format(log_time[0],bt_state,bd_state,ad_state,hf_state)
         print(out)
         #w = open('./log_analysis_{}.txt'.format(now),'a+')
         w.write(out+'\n')
@@ -157,7 +157,7 @@ def export():
         time.sleep(5)
     
     f = open('logcat.txt')
-    print('*******Time*******|****Bluetooth State*****|*******bond state*******|**********a2dp state*********|***********hfp state***********|')
+    print('*******Time*******|****Bluetooth State*****|*******bond state*******|**a2dp state**|**hfp state**|')
     line = f.readline()
     while line:
         log = line.strip()
