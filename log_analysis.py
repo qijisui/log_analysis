@@ -24,18 +24,18 @@ def bluetooth_state(log):
 
 #bong state
 def bong_none():
-    return "NONE"
+    return "none"
 
-def bong_boning():
-    return "BONDING"
+def bong_bonding():
+    return "bonding"
 
 def bong_bonded():
-    return "BONDED"
+    return "bonded"
 
 def bond_state_change(arg):
     switcher={
         '10':bong_none,
-        '11':bong_boning,
+        '11':bong_bonding,
         '12':bong_bonded,
         None:lambda:"no"
     }
@@ -56,22 +56,22 @@ def bond_state(log):
 
 #a2dp state
 def a2dp_disconnected():
-    return "DISCONNECTED"
+    return "disconnected"
 
 def a2dp_connecting():
-    return "CONNECTING"
+    return "connecting"
 
 def a2dp_connected():
-    return "CONNECTED"
+    return "connected"
 
 def a2dp_disconnecting():
-    return "DISCONNECTING"
+    return "disconnecting"
 
 def a2dp_playing():
-    return "PLAYING"
+    return "playing"
 
 def a2dp_not_playing():
-    return "NOT_PLAYING"
+    return "not_playing"
 
 def a2dp_state_change(arg):
     switcher={
@@ -107,31 +107,31 @@ def a2dp_state(log):
 
 #hfp state
 def hfp_disconnected():
-    return "DISCONNECTED"
+    return "disconnected"
 
 def hfp_connecting():
-    return "CONNECTING"
+    return "connecting"
 
 def hfp_connected():
-    return "CONNECTED"
+    return "connected"
 
 def hfp_disconnecting():
-    return "DISCONNECTING"
+    return "disconnecting"
 
 def hfp_slc_connected():
-    return "SLC_CONNECTED"
+    return "slc_connected"
 
 def audio_mode_normal():
-    return "NORMAL"
+    return "normal"
 
 def audio_mode_ringtone():
-    return "RINGTONE"
+    return "ringtone"
 
 def audio_mode_in_call():
-    return "IN CALL"
+    return "in_call"
 
 def audio_mode_in_communication():
-    return "IN COMMUNICATION"
+    return "in_communication"
 
 def hfp_state_change(arg):
     switcher={
@@ -187,34 +187,34 @@ def hfp_state(log):
 
 #avrcp
 def keycode_play():
-    return "PLAY"
+    return "play"
 
 def keycode_pause():
-    return "PAUSE"
+    return "pause"
 
 def keycode_stop():
-    return "STOP"
+    return "stop"
 
 def keycode_next():
-    return "NEXT"
+    return "next"
 
 def keycode_previous():
-    return "PREVIOUS"
+    return "previous"
 
 def keycode_rewind():
-    return "REWIND"
+    return "rewind"
 
 def keycode_play_pause():
-    return "PLAY_PAUSE"
+    return "play_pause"
 
 def keycode_fast_forward():
-    return "FAST_FORWARD"
+    return "fast_forward"
 
 def keycode_volume_up():
-    return "VOLUME_UP"
+    return "volume_up"
 
 def keycode_volume_dowm():
-    return "VOLUME_DOWN"
+    return "volume_down"
 
 def keycode_event(arg):
     switcher={
