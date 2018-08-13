@@ -2,6 +2,10 @@
 import os
 import time
 import re
+import sys
+import xlwt
+import xlrd
+
 # log time 
 def timestamp(log):
     pattern = re.compile(r'\d{1,2}-\d{1,2} \d{1,2}:\d{1,2}:\d{1,2}.\d{1,3}')
@@ -252,14 +256,12 @@ def process(log):
     ad_state = a2dp_state(log)
     hf_state = hfp_state(log)
     ctl_state = avrcp(log)
-
+    
     if log_time != [] and ((bt_state != ' ') or (bd_state != ' ') or (ad_state != ' ') or (hf_state != ' ') or (ctl_state != ' ')):
-        w = open('log_analysis.txt','a+')
-        #w = open('log_analysis_{}.txt'.format(now),'a+')
+        #w = open('loga.txt','a+')
         out = '{}|{:24}|{:17}|{:^24}|{:29}|{:12}'.format(log_time[0],bt_state,bd_state,ad_state,hf_state,ctl_state)
         print(out)
-        w.write(out+'\n')
-        w.close()
+        return out
 
 def exit():
     print("later")
@@ -273,22 +275,31 @@ def export():
         time.sleep(5)
     
     f = open('logcat.txt')
-    print('*******Time*******|****Bluetooth State*****|****bond state***|*******a2dp state*******|**********hfp state**********|****avrcp***')
+    w = open('loga_{}.txt'.format(now),'a+')
+    sys.stdout.write('*******Time*******|****Bluetooth State*****|')
+    sys.stdout.write('****bond state***|*******a2dp state*******|')
+    sys.stdout.write('**********hfp state**********|***avrcp***|')
+    w.write('*******Time*******|****Bluetooth State*****|')
+    w.write('****bond state***|*******a2dp state*******|')
+    w.write('**********hfp state**********|***avrcp***|')
     line = f.readline()
     while line:
         log = line.strip()
-        out = process(log)   
+        out = process(log)
+        if not out is None:
+            w.write(out+'\n') #将结果写入到loga.txt
         line = f.readline()
+    w.close()
     f.close()
     
     
 now	= time.strftime('%m%d%H%M%S')
-print('The file to be processed should be named: logcat.txt.')
+print('The file to be processed should be named: logcat.txt')
 command = input('please enter a command [1:continue,2:exit] --> ')
 if command == 1 or command == "continue" :
     export()
-    print''
-    print('Log analysis has finished,please open log_analysis_{}.txt.'.format(now))
+    print('')
+    print('Log analysis has finished,please open loga_{}.txt.'.format(now))
 elif command == 2 or command == "exit" :
     exit()
 
