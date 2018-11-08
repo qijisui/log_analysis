@@ -3,8 +3,6 @@ import os
 import time
 import re
 import sys
-import xlwt
-import xlrd
 
 # log time 
 def timestamp(log):
@@ -274,8 +272,8 @@ def export():
         os.system(command)
         time.sleep(5)
     
-    f = open('logcat.txt')
-    w = open('loga_{}.txt'.format(now),'a+')
+    f = open('./logcat.txt')
+    w = open('./loga_{}.txt'.format(now),'a+')
     sys.stdout.write('*******Time*******|****Bluetooth State*****|')
     sys.stdout.write('****bond state***|*******a2dp state*******|')
     sys.stdout.write('**********hfp state**********|***avrcp***|')
@@ -293,10 +291,11 @@ def export():
     f.close()
     
     
-now	= time.strftime('%m%d%H%M%S')
+now = time.strftime('%m%d%H%M%S')
 print('The file to be processed should be named: logcat.txt')
 command = input('please enter a command [1:continue,2:exit] --> ')
 if command == 1 or command == "continue" :
+    print(" 2")
     export()
     print('')
     print('Log analysis has finished,please open loga_{}.txt.'.format(now))
