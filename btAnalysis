@@ -8,7 +8,7 @@ import sys
 # get timestamp
 def get_timestamp(log):
     pattern = re.compile(r'\d{1,2}-\d{1,2} \d{1,2}:\d{1,2}:\d{1,2}.\d{1,3}')
-    time = pattern.findall(log)
+    time    = pattern.findall(log)
     return time
 
 # get bt enable/disable option
@@ -25,16 +25,38 @@ def get_bt_option(log):
 def get_ble_option(log):
 	p = re.match(r'.*  (.*?)  (.*?) D BluetoothAdapter: enableBLE\(\): Calling enable',log)
 	if not p is None :
-		return (" enableBLE()  " + p.group(1))
+		return (" enableBLE  " + p.group(1))
 	p = re.match(r'.*  (.*?)  (.*?) D BluetoothAdapter: disableBLE\(\): de-registering (.*?)$',log)
 	if not p is None :
-		return (" disableBLE()  " + p.group(1) + "  " + p.group(3))
+		return (" disableBLE  " + p.group(1) + "  " + p.group(3))
 	return ''
+
+def le_scan_mode(arg):
+    switcher={
+        '-1':'OPPORTUNISTIC',
+        '0' :'LOW_POWER',
+        '1' :'BALANCED',
+        '2' :'LOW_LATENCY'
+    }
+    return switcher[arg]
+
+# get ble scan state
+def get_ble_scan(log):
+    scan_start = re.match(r'.*  (.*?)  (.*?) D BluetoothLeScanner: start le scan , scan mode (.*?)$',log)
+    scan_stop  = re.match(r'.*  (.*?)  (.*?) D BluetoothLeScanner: stop le scan',log)
+
+    if not scan_start is None:
+        mode = le_scan_mode(scan_start.group(3))
+        return ('  ID:' + scan_start.group(1) + "\t\t\t\t\t" + 'start le scan      scan mode: ' + mode)
+    elif not scan_stop is None:
+        return ('  ID:' + scan_stop.group(1) + "\t\t\t\t\t" + 'stop le scan')
+    else:
+        return ''
 
 # get bluetooth state
 def get_bluetooth_state_change(log):
     pattern = re.compile(r'MESSAGE_BLUETOOTH_STATE_CHANGE: ?(.+)')
-    state = pattern.search(log)
+    state   = pattern.search(log)
     if not state is None:
         return state.group(1)
     else:
@@ -47,7 +69,6 @@ def get_bond_state_change(log):
         return (p.group(1) + "\t" + p.group(2))
     else:
         return ''
-
 
 def get_a2dp_state(log):
     p = re.match(r'.*A2dpStateMachine: Connection state (.*?): (.*?)$',log)
@@ -66,18 +87,19 @@ def get_hfp_state(log):
     else:
         return ''
 
+#get audio select output/input device
 def get_audio_path(log):
     p = re.match(r'.*audio_hw_primary: select_devices: out_snd_device\((.*?)\) in_snd_device\((.*?)\)',log)
     if not p is None:
         #return ('Audio  out: ' + p.group(1) + '  in: ' + p.group(2))
-	return ('Audio  out: {}  in: {}'.format(p.group(2),p.group(2)))
+	    return ('Audio  out: {}\t\tin: {}'.format(p.group(2),p.group(2)))
     else:
         return ''
 
-#avrcp
+#get avrcp action
 def avrcp(log):
     keycode = re.match(r'.*recordKeyDispatched: KeyEvent { action=ACTION_(.*?), keyCode=KEYCODE_MEDIA_(.*?),.*',log)
-    attr = re.match(r'.*Media update: id(.*?)\? \[MediaAttributes: (.*?) -.*\] : \[MediaAttributes: (.*?) -.*\]',log)
+    attr    = re.match(r'.*Media update: id(.*?)\? \[MediaAttributes: (.*?) -.*\] : \[MediaAttributes: (.*?) -.*\]',log)
     if not keycode is None:
         return ('AVRCP: {:^4}|{}'.format(keycode.group(1),keycode.group(2)))
     elif not attr is None:
@@ -87,23 +109,23 @@ def avrcp(log):
 
 #log process
 def process(log):
-    log_time = get_timestamp(log)
-    bt_option = get_bt_option(log)
-    bt_state = get_bluetooth_state_change(log)
+    log_time   = get_timestamp(log)
+    bt_option  = get_bt_option(log)
+    bt_state   = get_bluetooth_state_change(log)
     ble_option = get_ble_option(log)
-    bd_state = get_bond_state_change(log)
-    ad_state = get_a2dp_state(log)
-    hf_state = get_hfp_state(log)
+    ble_scan   = get_ble_scan(log)
+    bd_state   = get_bond_state_change(log)
+    ad_state   = get_a2dp_state(log)
+    hf_state   = get_hfp_state(log)
     audio_path = get_audio_path(log)
-    ctl_state = avrcp(log)
+    rc_state   = avrcp(log)
 
     if log_time != [] and ((bt_state != '') or (bd_state != '') or (ad_state != '') or (hf_state != '')\
-						   or (ctl_state != '') or (bt_option != '') or (ble_option != '') or (audio_path != '')):
-        out = log_time[0] + bt_option + ble_option + "\t\t" + bt_state + "\t\t" + bd_state + ad_state + hf_state +\
-              audio_path + ctl_state
+					or (rc_state != '') or (bt_option != '') or (ble_option != '') or (audio_path != '') or (ble_scan != '')):
+        out = log_time[0] + bt_option + ble_option + ble_scan + "\t\t" + bt_state + \
+                bd_state + "\t\t" + ad_state + hf_state + audio_path + rc_state
         print(out)
         return out
-
 
 def export(rf , wf):
     line = rf.readline()
@@ -121,7 +143,6 @@ def print_usage():
     print('usage:')
     print('read from adb logcat , input : btAnalysis')
     print('read from logcat file ,input : btAnalysis logPath')
-
 
 cmdlen = len(sys.argv)
 if cmdlen <= 2 :
