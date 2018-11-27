@@ -4,7 +4,7 @@
 
 ## 运行环境：Linux
 ## 适用版本：android P
-## Python版本：Python 2.7
+## Python版本：Python 2.x
 
 ## 脚本运行： 
 将脚本放置到/usr/bin/之后可以在任意终端中执行
