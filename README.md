@@ -1,5 +1,7 @@
-##运行环境：Linux\n
-适用版本：android P
+## 运行环境：
+Linux\n
+
+## 适用版本：android P
 Python版本：Python 2.7
 脚本作用：提取logcat log中蓝牙相关log，便于debug。
 脚本用法： 
