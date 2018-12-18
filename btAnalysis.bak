@@ -49,7 +49,7 @@ def get_ble_scan(log):
         mode = le_scan_mode(scan_start.group(2))
         return ('  ID:' + scan_start.group(1) + "\t\t\t\t\t" + 'start le scan      scan mode: ' + mode)
     elif not scan_stop is None:
-        return ('  ID:' + scan_stop.group(1) + "\t\t\t\t\t" + 'stop le scan')
+        return ('  ID:' + scan_stop.group(1) + "\t\t\t\t\t" + 'stop  le scan')
     else:
         return ''
 
