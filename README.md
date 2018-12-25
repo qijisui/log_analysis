@@ -3,7 +3,7 @@
 提取logcat log中蓝牙相关log，便于debug。
 
 ## 运行环境：Linux
-## 适用版本：android P
+## 适用版本：Android P
 ## Python版本：Python 2.x
 
 ## 脚本运行： 
